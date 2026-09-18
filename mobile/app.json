@@ -6,14 +6,12 @@
     "orientation": "portrait",
     "scheme": "roadshield",
     "userInterfaceStyle": "dark",
-    "newArchEnabled": true,
-    "splash": {
-      "backgroundColor": "#0F172A"
-    },
+
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.roadshield.app"
     },
+
     "android": {
       "package": "com.roadshield.app",
       "adaptiveIcon": {
@@ -25,6 +23,7 @@
         "CAMERA"
       ]
     },
+
     "plugins": [
       "expo-router",
       [
@@ -40,6 +39,7 @@
         }
       ]
     ],
+
     "experiments": {
       "typedRoutes": true
     }
