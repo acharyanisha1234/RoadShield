@@ -1,0 +1,17 @@
+# .gitignore
+node_modules/
+dist/
+build/
+.expo/
+.env
+.env.local
+*.log
+.DS_Store
+venv/
+__pycache__/
+*.pyc
+.vscode/
+.idea/
+coverage/
+*.h5
+*.pkl
