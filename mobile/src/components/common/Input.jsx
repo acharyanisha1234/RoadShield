@@ -21,12 +21,12 @@ export default function Input({
   return (
     <View className="mb-4">
       {label && (
-        <Text className="text-text-secondary mb-2 text-sm font-semibold tracking-wide">
+        <Text className="text-content-secondary mb-2 text-xs font-bold tracking-widest">
           {label.toUpperCase()}
         </Text>
       )}
       <View
-        className={`flex-row items-center bg-bg-elevated rounded-2xl border-2 px-4 ${
+        className={`flex-row items-center bg-bg-input rounded-2xl border px-4 ${
           error
             ? 'border-danger'
             : focused
@@ -36,21 +36,20 @@ export default function Input({
         style={
           focused
             ? {
-                shadowColor: '#FF4757',
+                shadowColor: '#FF3B3B',
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 0.2,
                 shadowRadius: 8,
-                elevation: 4,
               }
             : undefined
         }
       >
-        {icon && <Text className="text-lg mr-3">{icon}</Text>}
+        {icon && <Text className="text-base mr-3">{icon}</Text>}
         <TextInput
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor="#5A6183"
+          placeholderTextColor="#475569"
           secureTextEntry={secureTextEntry}
           keyboardType={keyboardType}
           autoCapitalize={autoCapitalize}
@@ -61,8 +60,8 @@ export default function Input({
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           textAlignVertical={multiline ? 'top' : 'center'}
-          className={`flex-1 text-text-primary text-base ${
-            multiline ? 'min-h-[100px] pt-2' : ''
+          className={`flex-1 text-content text-base ${
+            multiline ? 'min-h-[100px] pt-1' : ''
           }`}
         />
       </View>

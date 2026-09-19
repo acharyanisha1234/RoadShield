@@ -9,33 +9,36 @@ export default function Button({
   icon,
   className = '',
   disabled = false,
+  fullWidth = true,
 }) {
   const variants = {
     primary: 'bg-brand active:bg-brand-dark',
+    secondary: 'bg-bg-elevated active:bg-bg-card border border-bg-border',
     outline: 'bg-transparent border-2 border-brand active:bg-brand/10',
-    ghost: 'bg-bg-elevated active:bg-bg-high border border-bg-border',
-    danger: 'bg-danger active:bg-red-700',
-    success: 'bg-success active:bg-green-700',
+    ghost: 'bg-transparent active:bg-bg-card',
+    danger: 'bg-danger active:opacity-90',
+    success: 'bg-success active:opacity-90',
   };
 
   const textVariants = {
     primary: 'text-white',
+    secondary: 'text-content',
     outline: 'text-brand',
-    ghost: 'text-text-primary',
+    ghost: 'text-content',
     danger: 'text-white',
     success: 'text-white',
   };
 
   const sizes = {
-    sm: 'py-2.5 px-4',
-    md: 'py-4 px-6',
-    lg: 'py-5 px-8',
+    sm: 'py-2.5 px-4 rounded-xl',
+    md: 'py-3.5 px-5 rounded-2xl',
+    lg: 'py-4 px-6 rounded-2xl',
   };
 
   const textSizes = {
     sm: 'text-sm',
     md: 'text-base',
-    lg: 'text-lg',
+    lg: 'text-base',
   };
 
   return (
@@ -43,15 +46,15 @@ export default function Button({
       onPress={onPress}
       disabled={loading || disabled}
       activeOpacity={0.85}
-      className={`rounded-2xl items-center justify-center flex-row ${variants[variant]} ${sizes[size]} ${
+      className={`items-center justify-center flex-row ${variants[variant]} ${sizes[size]} ${
         loading || disabled ? 'opacity-50' : ''
-      } ${className}`}
+      } ${fullWidth ? 'w-full' : ''} ${className}`}
       style={
         variant === 'primary' && !loading && !disabled
           ? {
-              shadowColor: '#FF4757',
+              shadowColor: '#FF3B3B',
               shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.4,
+              shadowOpacity: 0.35,
               shadowRadius: 12,
               elevation: 8,
             }
@@ -59,11 +62,17 @@ export default function Button({
       }
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'outline' ? '#FF4757' : '#fff'} />
+        <ActivityIndicator color="#fff" />
       ) : (
         <View className="flex-row items-center">
-          {icon && <Text className="text-lg mr-2">{icon}</Text>}
-          <Text className={`font-bold ${textSizes[size]} ${textVariants[variant]}`}>
+          {icon && (
+            <Text className={`mr-2 ${size === 'sm' ? 'text-base' : 'text-lg'}`}>
+              {icon}
+            </Text>
+          )}
+          <Text
+            className={`font-bold tracking-wide ${textSizes[size]} ${textVariants[variant]}`}
+          >
             {title}
           </Text>
         </View>
