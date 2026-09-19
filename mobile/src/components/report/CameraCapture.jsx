@@ -56,13 +56,13 @@ export default function CameraCapture({ image, setImage }) {
           onPress={() => pick(true)}
           className="flex-1 bg-dark-card py-3 rounded-xl items-center mr-2 border border-dark-border"
         >
-          <Text className="text-white text-sm">📷 Camera</Text>
+          <Text className="text-white text-sm"> Camera</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => pick(false)}
           className="flex-1 bg-dark-card py-3 rounded-xl items-center border border-dark-border"
         >
-          <Text className="text-white text-sm">🖼️ Gallery</Text>
+          <Text className="text-white text-sm">Gallery</Text>
         </TouchableOpacity>
       </View>
 
