@@ -88,7 +88,7 @@ export default function ReportScreen() {
 
       await reportService.create(formData);
 
-      Toast.show({ type: 'success', text1: '✅ Report submitted!' });
+      Toast.show({ type: 'success', text1: 'Report submitted!' });
       setTitle('');
       setDescription('');
       setImage(null);
