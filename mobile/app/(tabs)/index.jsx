@@ -78,7 +78,7 @@ export default function MapScreen() {
   const highCount = reports.filter((r) => r.severity === 'high').length;
   const mediumCount = reports.filter((r) => r.severity === 'medium').length;
 
-  // 👇 Web fallback UI
+  // Web fallback UI
   if (Platform.OS === 'web') {
     return (
       <View className="flex-1 bg-bg">
