@@ -11,7 +11,7 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: '#0F172A' },
+          contentStyle: { backgroundColor: '#0B1120' },
         }}
       />
       <Toast />

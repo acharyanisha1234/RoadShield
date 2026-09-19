@@ -8,35 +8,49 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Background layers
+        // Background layers (deep → elevated)
         bg: {
-          DEFAULT: '#0A0E1A',      // Deep navy
-          elevated: '#151A2E',      // Card
-          high: '#1E2440',          // Higher elevation
-          border: '#252B45',        // Subtle border
+          DEFAULT: '#0B0F1A',       // Deepest — screen bg
+          card: '#141A28',           // Card bg
+          elevated: '#1C2333',       // Elevated card
+          input: '#1A2130',          // Input bg
+          border: '#232B3D',         // Subtle border
+          divider: '#1A2130',        // Divider
         },
-        // Brand
+        // Brand — Red (RoadShield)
         brand: {
-          DEFAULT: '#FF4757',       // Vibrant red
-          dark: '#C0392B',          // Deep red
-          light: '#FF6B7A',         // Light red
-          glow: 'rgba(255, 71, 87, 0.3)',
+          DEFAULT: '#FF3B3B',
+          dark: '#D92D2D',
+          light: '#FF6B6B',
+          glow: 'rgba(255, 59, 59, 0.25)',
         },
         // Status
-        success: '#2ED573',
-        warning: '#FFA502',
-        danger: '#FF4757',
-        info: '#3B82F6',
+        success: {
+          DEFAULT: '#00D26A',
+          bg: 'rgba(0, 210, 106, 0.15)',
+        },
+        warning: {
+          DEFAULT: '#FFB800',
+          bg: 'rgba(255, 184, 0, 0.15)',
+        },
+        danger: {
+          DEFAULT: '#FF3B3B',
+          bg: 'rgba(255, 59, 59, 0.15)',
+        },
+        info: {
+          DEFAULT: '#3B82F6',
+          bg: 'rgba(59, 130, 246, 0.15)',
+        },
         // Text
-        text: {
-          primary: '#FFFFFF',
-          secondary: '#8B92B0',
-          muted: '#5A6183',
-          dim: '#3D4459',
+        content: {
+          DEFAULT: '#FFFFFF',        // Primary text
+          secondary: '#94A3B8',      // Secondary
+          muted: '#64748B',          // Muted
+          dim: '#475569',            // Very muted
         },
       },
-      fontFamily: {
-        sans: ['System'],
+      fontSize: {
+        '2xs': '10px',
       },
     },
   },

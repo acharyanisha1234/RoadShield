@@ -1,49 +1,48 @@
 export const colors = {
-  bg: '#0A0E1A',
-  bgElevated: '#151A2E',
-  bgHigh: '#1E2440',
-  border: '#252B45',
+  bg: '#0B0F1A',
+  bgCard: '#141A28',
+  bgElevated: '#1C2333',
+  bgInput: '#1A2130',
+  border: '#232B3D',
+  divider: '#1A2130',
 
-  brand: '#FF4757',
-  brandDark: '#C0392B',
-  brandLight: '#FF6B7A',
+  brand: '#FF3B3B',
+  brandDark: '#D92D2D',
+  brandLight: '#FF6B6B',
 
-  success: '#2ED573',
-  warning: '#FFA502',
-  danger: '#FF4757',
+  success: '#00D26A',
+  warning: '#FFB800',
+  danger: '#FF3B3B',
   info: '#3B82F6',
 
   textPrimary: '#FFFFFF',
-  textSecondary: '#8B92B0',
-  textMuted: '#5A6183',
-  textDim: '#3D4459',
+  textSecondary: '#94A3B8',
+  textMuted: '#64748B',
+  textDim: '#475569',
 };
 
 export const severityConfig = {
   low: {
     label: 'Low',
     color: colors.success,
-    bg: 'rgba(46, 213, 115, 0.15)',
-    icon: '🟢',
+    bg: colors.success + '20',
   },
   medium: {
     label: 'Medium',
     color: colors.warning,
-    bg: 'rgba(255, 165, 2, 0.15)',
-    icon: '🟡',
+    bg: colors.warning + '20',
   },
   high: {
     label: 'High',
     color: colors.danger,
-    bg: 'rgba(255, 71, 87, 0.15)',
-    icon: '🔴',
+    bg: colors.danger + '20',
   },
 };
 
 export const typeConfig = {
-  accident: { label: 'Accident', icon: '🚗', color: '#FF4757' },
-  pothole: { label: 'Pothole', icon: '🕳️', color: '#FFA502' },
-  roadwork: { label: 'Roadwork', icon: '🚧', color: '#FF8C00' },
+  accident: { label: 'Accident', icon: '🚗', color: '#FF3B3B' },
+  pothole: { label: 'Pothole', icon: '🕳️', color: '#FFB800' },
+  roadwork: { label: 'Roadwork', icon: '🚧', color: '#FF8C42' },
   flood: { label: 'Flood', icon: '🌊', color: '#3B82F6' },
-  other: { label: 'Other', icon: '⚠️', color: '#8B92B0' },
+  other: { label: 'Other', icon: '⚠️', color: '#94A3B8' },
 };
