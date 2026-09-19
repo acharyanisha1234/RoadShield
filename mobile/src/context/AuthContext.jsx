@@ -30,34 +30,46 @@ export function AuthProvider({ children }) {
   };
 
   const login = async (email, password) => {
-    const res = await authService.login(email, password);
-    const { token: newToken, ...userData } = res.data;
+    try {
+      const res = await authService.login(email, password);
+      const { token: newToken, ...userData } = res.data;
 
-    await AsyncStorage.setItem('token', newToken);
-    await AsyncStorage.setItem('user', JSON.stringify(userData));
+      await AsyncStorage.setItem('token', newToken);
+      await AsyncStorage.setItem('user', JSON.stringify(userData));
 
-    setToken(newToken);
-    setUser(userData);
-    return res;
+      setToken(newToken);
+      setUser(userData);
+      return res;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const register = async (data) => {
-    const res = await authService.register(data);
-    const { token: newToken, ...userData } = res.data;
+    try {
+      const res = await authService.register(data);
+      const { token: newToken, ...userData } = res.data;
 
-    await AsyncStorage.setItem('token', newToken);
-    await AsyncStorage.setItem('user', JSON.stringify(userData));
+      await AsyncStorage.setItem('token', newToken);
+      await AsyncStorage.setItem('user', JSON.stringify(userData));
 
-    setToken(newToken);
-    setUser(userData);
-    return res;
+      setToken(newToken);
+      setUser(userData);
+      return res;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const logout = async () => {
-    await AsyncStorage.removeItem('token');
-    await AsyncStorage.removeItem('user');
-    setToken(null);
-    setUser(null);
+    try {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('user');
+      setToken(null);
+      setUser(null);
+    } catch (error) {
+      console.log('Logout error:', error);
+    }
   };
 
   return (

@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { useAuth } from '../../src/context/AuthContext';
@@ -7,7 +14,12 @@ import Input from '../../src/components/common/Input';
 import Button from '../../src/components/common/Button';
 
 export default function RegisterScreen() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '' });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+  });
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const router = useRouter();
@@ -20,16 +32,25 @@ export default function RegisterScreen() {
       return;
     }
 
+    if (form.password.length < 6) {
+      Toast.show({ type: 'error', text1: 'Password must be 6+ characters' });
+      return;
+    }
+
     setLoading(true);
     try {
       await register(form);
       Toast.show({ type: 'success', text1: 'Account created! 🎉' });
       router.replace('/(tabs)');
     } catch (err) {
+      console.log('Register error:', err);
       Toast.show({
         type: 'error',
         text1: 'Registration failed',
-        text2: err.response?.data?.message || err.message,
+        text2:
+          err?.response?.data?.message ||
+          err?.message ||
+          'Something went wrong',
       });
     } finally {
       setLoading(false);
@@ -83,7 +104,12 @@ export default function RegisterScreen() {
             secureTextEntry
           />
 
-          <Button title="Register" onPress={handleRegister} loading={loading} className="mt-2" />
+          <Button
+            title="Register"
+            onPress={handleRegister}
+            loading={loading}
+            className="mt-2"
+          />
 
           <TouchableOpacity onPress={() => router.back()} className="mt-6">
             <Text className="text-slate-400 text-center">
