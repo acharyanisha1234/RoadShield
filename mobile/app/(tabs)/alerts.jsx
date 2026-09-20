@@ -5,17 +5,17 @@ import {
   FlatList,
   RefreshControl,
   ActivityIndicator,
+  TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import ReportCard from '../../src/components/report/ReportCard';
-import { useReports } from '../../src/hooks/useReports';
+import { Ionicons } from '@expo/vector-icons';
 
-const FILTERS = [
-  { key: 'all', label: 'All' },
-  { key: 'high', label: 'High' },
-  { key: 'medium', label: 'Medium' },
-  { key: 'low', label: 'Low' },
-];
+import ReportCard from '../../src/components/report/ReportCard';
+import EmptyState from '../../src/components/common/EmptyState';
+import { useReports } from '../../src/hooks/useReports';
+import { colors } from '../../src/theme/colors';
+import { ALERT_FILTERS } from '../../src/constants/reportConstants';
 
 export default function AlertsScreen() {
   const { reports, loading, fetchReports } = useReports();
@@ -32,38 +32,61 @@ export default function AlertsScreen() {
   }, [load]);
 
   return (
-    <View className="flex-1 bg-dark">
-      <View className="px-6 pt-16 pb-4">
-        <Text className="text-white text-3xl font-bold">🔔 Alerts</Text>
-        <Text className="text-slate-400 mt-1">Nearby road incidents</Text>
+    <View className="flex-1 bg-bg">
+      <View className="px-5 pt-16 pb-4">
+        <View className="flex-row items-center justify-between">
+          <View>
+            <Text className="text-content text-3xl font-bold">Alerts</Text>
+            <Text className="text-content-secondary mt-1 text-sm">
+              {reports.length} {reports.length === 1 ? 'report' : 'reports'} nearby
+            </Text>
+          </View>
+          <View className="w-11 h-11 rounded-2xl bg-brand/15 items-center justify-center">
+            <Ionicons name="notifications" size={22} color={colors.brand} />
+          </View>
+        </View>
 
-        <View className="flex-row gap-2 mt-4">
-          {FILTERS.map((f) => (
-            <View key={f.key} className="mr-2">
-              <Text
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="mt-4"
+          contentContainerStyle={{ gap: 8 }}
+        >
+          {ALERT_FILTERS.map((f) => {
+            const active = filter === f.key;
+            return (
+              <TouchableOpacity
+                key={f.key}
                 onPress={() => setFilter(f.key)}
-                className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  filter === f.key
-                    ? 'bg-primary text-white'
-                    : 'bg-dark-card text-slate-400'
+                activeOpacity={0.8}
+                className={`px-4 py-2.5 rounded-full border ${
+                  active
+                    ? 'bg-brand border-brand'
+                    : 'bg-bg-card border-bg-border'
                 }`}
               >
-                {f.label}
-              </Text>
-            </View>
-          ))}
-        </View>
+                <Text
+                  className={`text-sm font-semibold ${
+                    active ? 'text-white' : 'text-content-secondary'
+                  }`}
+                >
+                  {f.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
       </View>
 
       {loading && reports.length === 0 ? (
         <View className="flex-1 justify-center items-center">
-          <ActivityIndicator color="#EF4444" size="large" />
+          <ActivityIndicator color={colors.brand} size="large" />
         </View>
       ) : (
         <FlatList
           data={reports}
           keyExtractor={(item) => item._id}
-          contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 40 }}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
           renderItem={({ item }) => (
             <ReportCard
               report={item}
@@ -74,18 +97,17 @@ export default function AlertsScreen() {
             <RefreshControl
               refreshing={loading}
               onRefresh={load}
-              tintColor="#EF4444"
+              tintColor={colors.brand}
             />
           }
           ListEmptyComponent={
-            <View className="items-center mt-20">
-              <Text className="text-5xl mb-3">🎉</Text>
-              <Text className="text-white font-semibold">No reports</Text>
-              <Text className="text-slate-500 text-sm mt-1">
-                Everything looks clear
-              </Text>
-            </View>
+            <EmptyState
+              icon="checkmark-done-circle-outline"
+              title="All clear"
+              subtitle="No reports nearby. Roads are looking good."
+            />
           }
+          showsVerticalScrollIndicator={false}
         />
       )}
     </View>
