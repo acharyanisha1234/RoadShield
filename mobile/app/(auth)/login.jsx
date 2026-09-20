@@ -1,10 +1,20 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
+
 import { useAuth } from '../../src/context/AuthContext';
 import Input from '../../src/components/common/Input';
 import Button from '../../src/components/common/Button';
+import { colors } from '../../src/theme/colors';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -15,20 +25,20 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Toast.show({ type: 'error', text1: 'Missing fields', text2: 'Fill in all fields' });
+      Toast.show({ type: 'error', text1: 'Please fill in all fields' });
       return;
     }
 
     setLoading(true);
     try {
       await login(email, password);
-      Toast.show({ type: 'success', text1: 'Welcome back! 🛡️' });
+      Toast.show({ type: 'success', text1: 'Welcome back' });
       router.replace('/(tabs)');
-    } catch (err) {
+    } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Login failed',
-        text2: err.response?.data?.message || err.message,
+        text2: error.response?.data?.message || error.message,
       });
     } finally {
       setLoading(false);
@@ -38,15 +48,18 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-dark"
+      className="flex-1 bg-bg"
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="px-6">
-        <View className="flex-1 justify-center">
+        <View className="flex-1 justify-center py-12">
+          {/* Logo */}
           <View className="items-center mb-12">
-            <Text className="text-6xl mb-2">🛡️</Text>
-            <Text className="text-white text-3xl font-bold">RoadShield</Text>
-            <Text className="text-slate-400 text-sm mt-1">
-              Your Road Safety Companion
+            <View className="w-20 h-20 rounded-3xl bg-brand items-center justify-center mb-4">
+              <Ionicons name="shield-checkmark" size={40} color="#FFFFFF" />
+            </View>
+            <Text className="text-content text-3xl font-bold">RoadShield</Text>
+            <Text className="text-content-secondary text-sm mt-1">
+              Road safety for everyone
             </Text>
           </View>
 
@@ -56,25 +69,35 @@ export default function LoginScreen() {
             onChangeText={setEmail}
             placeholder="you@example.com"
             keyboardType="email-address"
+            icon="mail-outline"
           />
 
           <Input
             label="Password"
             value={password}
             onChangeText={setPassword}
-            placeholder="••••••••"
+            placeholder="Enter your password"
             secureTextEntry
+            icon="lock-closed-outline"
           />
 
-          <Button title="Login" onPress={handleLogin} loading={loading} className="mt-2" />
+          <Button
+            title="Sign In"
+            onPress={handleLogin}
+            loading={loading}
+            icon="log-in-outline"
+            size="lg"
+            className="mt-2"
+          />
 
           <TouchableOpacity
             onPress={() => router.push('/(auth)/register')}
-            className="mt-6"
+            className="mt-6 py-2"
+            activeOpacity={0.7}
           >
-            <Text className="text-slate-400 text-center">
+            <Text className="text-content-secondary text-center text-sm">
               Don't have an account?{' '}
-              <Text className="text-primary font-semibold">Register</Text>
+              <Text className="text-brand font-semibold">Sign Up</Text>
             </Text>
           </TouchableOpacity>
         </View>
