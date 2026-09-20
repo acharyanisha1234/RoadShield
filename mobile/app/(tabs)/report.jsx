@@ -9,26 +9,19 @@ import {
 } from 'react-native';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
+
 import CameraCapture from '../../src/components/report/CameraCapture';
+import TypeChip from '../../src/components/report/TypeChip';
+import SeveritySelector from '../../src/components/report/SeveritySelector';
 import Button from '../../src/components/common/Button';
 import Input from '../../src/components/common/Input';
 import SectionHeader from '../../src/components/common/SectionHeader';
+
 import { reportService } from '../../src/services/reportService';
-
-const TYPES = [
-  { key: 'accident', label: 'Accident', icon: '🚗' },
-  { key: 'pothole', label: 'Pothole', icon: '🕳️' },
-  { key: 'roadwork', label: 'Roadwork', icon: '🚧' },
-  { key: 'flood', label: 'Flood', icon: '🌊' },
-  { key: 'other', label: 'Other', icon: '⚠️' },
-];
-
-const SEVERITIES = [
-  { key: 'low', label: 'Low', emoji: '🟢', color: '#00D26A' },
-  { key: 'medium', label: 'Medium', emoji: '🟡', color: '#FFB800' },
-  { key: 'high', label: 'High', emoji: '🔴', color: '#FF3B3B' },
-];
+import { colors } from '../../src/theme/colors';
+import { INCIDENT_TYPES, REPORT_LIMITS } from '../../src/constants/reportConstants';
 
 export default function ReportScreen() {
   const [title, setTitle] = useState('');
@@ -41,7 +34,11 @@ export default function ReportScreen() {
   const router = useRouter();
 
   useEffect(() => {
-    (async () => {
+    initializeLocation();
+  }, []);
+
+  const initializeLocation = async () => {
+    try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         Toast.show({ type: 'error', text1: 'Location permission denied' });
@@ -51,15 +48,22 @@ export default function ReportScreen() {
         accuracy: Location.Accuracy.High,
       });
       setLocation(loc.coords);
-    })();
-  }, []);
-
-  const refreshLocation = async () => {
-    const loc = await Location.getCurrentPositionAsync({});
-    setLocation(loc.coords);
+    } catch (error) {
+      console.error('Location error:', error);
+    }
   };
 
-  const submit = async () => {
+  const handleRefreshLocation = async () => {
+    try {
+      const loc = await Location.getCurrentPositionAsync({});
+      setLocation(loc.coords);
+      Toast.show({ type: 'success', text1: 'Location updated' });
+    } catch (error) {
+      Toast.show({ type: 'error', text1: 'Failed to get location' });
+    }
+  };
+
+  const handleSubmit = async () => {
     if (!title.trim()) {
       Toast.show({ type: 'error', text1: 'Title required' });
       return;
@@ -89,18 +93,20 @@ export default function ReportScreen() {
 
       await reportService.create(formData);
 
-      Toast.show({ type: 'success', text1: '✅ Report submitted!' });
+      Toast.show({ type: 'success', text1: 'Report submitted successfully' });
+
       setTitle('');
       setDescription('');
       setImage(null);
       setType('accident');
       setSeverity('medium');
+
       router.push('/(tabs)');
-    } catch (err) {
+    } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Submission failed',
-        text2: err.response?.data?.message || err.message,
+        text2: error.response?.data?.message || error.message,
       });
     } finally {
       setLoading(false);
@@ -119,7 +125,6 @@ export default function ReportScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View className="px-5 pt-16">
-          {/* Header */}
           <View className="mb-6">
             <Text className="text-content text-3xl font-bold">
               Report Incident
@@ -129,17 +134,15 @@ export default function ReportScreen() {
             </Text>
           </View>
 
-          {/* Camera */}
           <CameraCapture image={image} setImage={setImage} />
 
-          {/* Location Card — reference style */}
           <TouchableOpacity
-            onPress={refreshLocation}
+            onPress={handleRefreshLocation}
             activeOpacity={0.85}
             className="mt-4 bg-bg-card rounded-2xl p-4 flex-row items-center border border-bg-border"
           >
-            <View className="w-11 h-11 rounded-full bg-brand/15 items-center justify-center mr-3">
-              <Text className="text-xl">📍</Text>
+            <View className="w-11 h-11 rounded-xl bg-brand/15 items-center justify-center mr-3">
+              <Ionicons name="location" size={22} color={colors.brand} />
             </View>
             <View className="flex-1">
               <Text className="text-content-muted text-2xs font-bold tracking-widest">
@@ -151,97 +154,33 @@ export default function ReportScreen() {
                   : 'Getting location...'}
               </Text>
             </View>
-            <Text className="text-content-muted text-lg">↻</Text>
+            <Ionicons name="refresh" size={18} color={colors.textMuted} />
           </TouchableOpacity>
 
-          {/* Incident Type */}
-          <SectionHeader title="Incident Type" />
+          <SectionHeader title="Incident Type" className="mt-6" />
           <View className="flex-row flex-wrap gap-2">
-            {TYPES.map((t) => {
-              const active = type === t.key;
-              return (
-                <TouchableOpacity
-                  key={t.key}
-                  onPress={() => setType(t.key)}
-                  activeOpacity={0.8}
-                  className={`px-4 py-3 rounded-2xl border flex-row items-center ${
-                    active
-                      ? 'bg-brand border-brand'
-                      : 'bg-bg-card border-bg-border'
-                  }`}
-                  style={
-                    active
-                      ? {
-                          shadowColor: '#FF3B3B',
-                          shadowOffset: { width: 0, height: 4 },
-                          shadowOpacity: 0.35,
-                          shadowRadius: 10,
-                          elevation: 6,
-                        }
-                      : undefined
-                  }
-                >
-                  <Text className="text-base mr-2">{t.icon}</Text>
-                  <Text
-                    className={`text-sm font-semibold ${
-                      active ? 'text-white' : 'text-content-secondary'
-                    }`}
-                  >
-                    {t.label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+            {INCIDENT_TYPES.map((t) => (
+              <TypeChip
+                key={t.key}
+                type={t}
+                active={type === t.key}
+                onPress={() => setType(t.key)}
+              />
+            ))}
           </View>
 
-          {/* Severity */}
-          <SectionHeader title="Severity Level" />
-          <View className="flex-row gap-3">
-            {SEVERITIES.map((s) => {
-              const active = severity === s.key;
-              return (
-                <TouchableOpacity
-                  key={s.key}
-                  onPress={() => setSeverity(s.key)}
-                  activeOpacity={0.85}
-                  className={`flex-1 py-4 rounded-2xl items-center justify-center border ${
-                    active ? 'border-transparent' : 'bg-bg-card border-bg-border'
-                  }`}
-                  style={
-                    active
-                      ? {
-                          backgroundColor: s.color,
-                          shadowColor: s.color,
-                          shadowOffset: { width: 0, height: 4 },
-                          shadowOpacity: 0.4,
-                          shadowRadius: 12,
-                          elevation: 8,
-                        }
-                      : undefined
-                  }
-                >
-                  <Text className="text-2xl mb-1">{s.emoji}</Text>
-                  <Text
-                    className={`text-xs font-bold tracking-wide ${
-                      active ? 'text-white' : 'text-content-secondary'
-                    }`}
-                  >
-                    {s.label.toUpperCase()}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+          <SectionHeader title="Severity Level" className="mt-6" />
+          <SeveritySelector value={severity} onChange={setSeverity} />
 
-          {/* Title */}
-          <SectionHeader title="Details" />
+          <SectionHeader title="Details" className="mt-6" />
+
           <Input
             label="Title"
             value={title}
             onChangeText={setTitle}
             placeholder="e.g. Accident near Kalanki"
-            maxLength={120}
-            icon="📝"
+            maxLength={REPORT_LIMITS.TITLE_MAX}
+            icon="create-outline"
           />
 
           <Input
@@ -251,17 +190,16 @@ export default function ReportScreen() {
             placeholder="Describe what happened..."
             multiline
             numberOfLines={4}
-            maxLength={1000}
-            icon="💬"
+            maxLength={REPORT_LIMITS.DESCRIPTION_MAX}
+            icon="chatbubble-outline"
           />
 
-          {/* Submit */}
           <View className="mt-6">
             <Button
               title="Submit Report"
-              onPress={submit}
+              onPress={handleSubmit}
               loading={loading}
-              icon="🚀"
+              icon="checkmark-circle"
               size="lg"
             />
           </View>
