@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { colors } from '../../theme/colors';
 
 export default function Input({
   label,
@@ -18,38 +20,47 @@ export default function Input({
 }) {
   const [focused, setFocused] = useState(false);
 
+  const borderColor = error
+    ? colors.danger
+    : focused
+    ? colors.brand
+    : colors.border;
+
   return (
     <View className="mb-4">
       {label && (
-        <Text className="text-content-secondary mb-2 text-xs font-bold tracking-widest">
+        <Text className="text-content-secondary mb-2 text-2xs font-bold tracking-widest">
           {label.toUpperCase()}
         </Text>
       )}
+
       <View
         className={`flex-row items-center bg-bg-input rounded-2xl border px-4 ${
-          error
-            ? 'border-danger'
-            : focused
-            ? 'border-brand'
-            : 'border-bg-border'
-        } ${multiline ? 'py-3 items-start' : 'h-14'}`}
-        style={
-          focused
-            ? {
-                shadowColor: '#FF3B3B',
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.2,
-                shadowRadius: 8,
-              }
-            : undefined
-        }
+          multiline ? 'py-3 items-start' : 'h-14'
+        }`}
+        style={{
+          borderColor,
+          ...(focused && {
+            shadowColor: colors.brand,
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.2,
+            shadowRadius: 8,
+          }),
+        }}
       >
-        {icon && <Text className="text-base mr-3">{icon}</Text>}
+        {icon && (
+          <Ionicons
+            name={icon}
+            size={18}
+            color={focused ? colors.brand : colors.textMuted}
+            style={{ marginRight: 12 }}
+          />
+        )}
         <TextInput
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor="#475569"
+          placeholderTextColor={colors.textDim}
           secureTextEntry={secureTextEntry}
           keyboardType={keyboardType}
           autoCapitalize={autoCapitalize}
@@ -65,8 +76,12 @@ export default function Input({
           }`}
         />
       </View>
+
       {error && (
-        <Text className="text-danger text-xs mt-1.5 ml-1">⚠ {error}</Text>
+        <View className="flex-row items-center mt-1.5 ml-1">
+          <Ionicons name="alert-circle" size={12} color={colors.danger} />
+          <Text className="text-danger text-xs ml-1">{error}</Text>
+        </View>
       )}
     </View>
   );
