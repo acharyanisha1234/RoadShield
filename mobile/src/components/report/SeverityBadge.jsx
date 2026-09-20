@@ -1,17 +1,27 @@
 import { View, Text } from 'react-native';
+import { severityConfig } from '../../theme/colors';
 
-const styles = {
-  low: { bg: 'bg-success/20', text: 'text-success', dot: 'bg-success' },
-  medium: { bg: 'bg-warning/20', text: 'text-warning', dot: 'bg-warning' },
-  high: { bg: 'bg-danger/20', text: 'text-danger', dot: 'bg-danger' },
-};
+export default function SeverityBadge({ severity = 'medium', size = 'md' }) {
+  const s = severityConfig[severity] || severityConfig.medium;
 
-export default function SeverityBadge({ severity = 'medium' }) {
-  const s = styles[severity] || styles.medium;
+  const sizes = {
+    sm: { padding: 'px-2 py-0.5', text: 'text-2xs' },
+    md: { padding: 'px-2.5 py-1', text: 'text-xs' },
+  };
+
+  const sz = sizes[size] || sizes.md;
+
   return (
-    <View className={`flex-row items-center px-2.5 py-1 rounded-full ${s.bg}`}>
-      <View className={`w-1.5 h-1.5 rounded-full mr-1.5 ${s.dot}`} />
-      <Text className={`text-xs font-bold uppercase ${s.text}`}>{severity}</Text>
+    <View
+      className={`rounded-full ${sz.padding}`}
+      style={{ backgroundColor: s.bg }}
+    >
+      <Text
+        className={`font-bold tracking-wider ${sz.text}`}
+        style={{ color: s.color }}
+      >
+        {s.label.toUpperCase()}
+      </Text>
     </View>
   );
 }
