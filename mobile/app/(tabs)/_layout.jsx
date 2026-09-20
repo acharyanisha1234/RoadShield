@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
+import TabBarIcon from '../../src/components/layout/TabBarIcon';
+import { colors } from '../../src/theme/colors';
 
 export default function TabLayout() {
   return (
@@ -7,43 +8,57 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#1E293B',
-          borderTopColor: '#334155',
-          height: 65,
-          paddingBottom: 8,
+          backgroundColor: '#0F1421',
+          borderTopColor: colors.border,
+          borderTopWidth: 1,
+          height: 72,
           paddingTop: 8,
+          paddingBottom: 12,
         },
-        tabBarActiveTintColor: '#EF4444',
-        tabBarInactiveTintColor: '#64748B',
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+        tabBarActiveTintColor: colors.brand,
+        tabBarInactiveTintColor: colors.textDim,
+        tabBarLabelStyle: {
+          fontSize: 10,
+          fontWeight: '700',
+          marginTop: 2,
+          letterSpacing: 0.5,
+        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Map',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>🗺️</Text>,
+          title: 'MAP',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon name="map" focused={focused} />
+          ),
         }}
       />
       <Tabs.Screen
         name="report"
         options={{
-          title: 'Report',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}></Text>,
+          title: 'REPORT',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon name="add-circle" focused={focused} />
+          ),
         }}
       />
       <Tabs.Screen
         name="alerts"
         options={{
-          title: 'Alerts',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}></Text>,
+          title: 'ALERTS',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon name="notifications" focused={focused} />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}></Text>,
+          title: 'PROFILE',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon name="person" focused={focused} />
+          ),
         }}
       />
     </Tabs>
