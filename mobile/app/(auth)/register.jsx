@@ -3,17 +3,17 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 
 import { useAuth } from '../../src/context/AuthContext';
 import Input from '../../src/components/common/Input';
 import Button from '../../src/components/common/Button';
+import AuthHeader from '../../src/components/auth/AuthHeader';
 
 export default function RegisterScreen() {
   const [form, setForm] = useState({
@@ -70,17 +70,10 @@ export default function RegisterScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View className="flex-1 justify-center py-12">
-          <View className="items-center mb-10">
-            <View className="w-16 h-16 rounded-3xl bg-brand items-center justify-center mb-3">
-              <Ionicons name="shield-checkmark" size={32} color="#FFFFFF" />
-            </View>
-            <Text className="text-content text-2xl font-bold">
-              Create Account
-            </Text>
-            <Text className="text-content-secondary text-sm mt-1">
-              Join the RoadShield community
-            </Text>
-          </View>
+          <AuthHeader
+            title="Create Account"
+            subtitle="Join the RoadShield community"
+          />
 
           <Input
             label="Full Name"
