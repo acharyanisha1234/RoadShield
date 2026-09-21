@@ -3,18 +3,17 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 
 import { useAuth } from '../../src/context/AuthContext';
 import Input from '../../src/components/common/Input';
 import Button from '../../src/components/common/Button';
-import { colors } from '../../src/theme/colors';
+import AuthHeader from '../../src/components/auth/AuthHeader';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -50,18 +49,13 @@ export default function LoginScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className="flex-1 bg-bg"
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="px-6">
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        className="px-6"
+        keyboardShouldPersistTaps="handled"
+      >
         <View className="flex-1 justify-center py-12">
-          {/* Logo */}
-          <View className="items-center mb-12">
-            <View className="w-20 h-20 rounded-3xl bg-brand items-center justify-center mb-4">
-              <Ionicons name="shield-checkmark" size={40} color="#FFFFFF" />
-            </View>
-            <Text className="text-content text-3xl font-bold">RoadShield</Text>
-            <Text className="text-content-secondary text-sm mt-1">
-              Road safety for everyone
-            </Text>
-          </View>
+          <AuthHeader title="RoadShield" subtitle="Road safety for everyone" />
 
           <Input
             label="Email"
