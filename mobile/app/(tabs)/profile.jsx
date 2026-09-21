@@ -34,7 +34,7 @@ export default function ProfileScreen() {
   };
 
   const handleMenuPress = (key) => {
-    console.log('Menu item pressed:', key);
+    console.log('Menu:', key);
   };
 
   return (
@@ -49,7 +49,6 @@ export default function ProfileScreen() {
           Manage your account settings
         </Text>
 
-        {/* User Card */}
         <View className="bg-bg-card rounded-2xl p-5 mt-6 border border-bg-border flex-row items-center">
           <View className="w-16 h-16 rounded-2xl bg-brand items-center justify-center">
             <Text className="text-white text-2xl font-bold">
@@ -71,7 +70,6 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Menu */}
         <View className="mt-6">
           <Text className="text-content-muted text-2xs font-bold tracking-widest mb-3">
             ACCOUNT
@@ -103,7 +101,6 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        {/* Logout */}
         <View className="mt-6">
           <Button
             title="Logout"
