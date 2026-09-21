@@ -1,9 +1,3 @@
-/**
- * Centralized icon mappings using @expo/vector-icons
- * Ionicons: outline/filled variants
- * MaterialCommunityIcons: detailed icons
- */
-
 export const Ionicons = {
   shield: 'shield-checkmark',
   shieldOutline: 'shield-checkmark-outline',
