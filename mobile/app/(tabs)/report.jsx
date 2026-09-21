@@ -3,24 +3,22 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 
 import CameraCapture from '../../src/components/report/CameraCapture';
 import TypeChip from '../../src/components/report/TypeChip';
 import SeveritySelector from '../../src/components/report/SeveritySelector';
+import LocationCard from '../../src/components/report/LocationCard';
 import Button from '../../src/components/common/Button';
 import Input from '../../src/components/common/Input';
 import SectionHeader from '../../src/components/common/SectionHeader';
 
 import { reportService } from '../../src/services/reportService';
-import { colors } from '../../src/theme/colors';
 import { INCIDENT_TYPES, REPORT_LIMITS } from '../../src/constants/reportConstants';
 
 export default function ReportScreen() {
@@ -136,26 +134,9 @@ export default function ReportScreen() {
 
           <CameraCapture image={image} setImage={setImage} />
 
-          <TouchableOpacity
-            onPress={handleRefreshLocation}
-            activeOpacity={0.85}
-            className="mt-4 bg-bg-card rounded-2xl p-4 flex-row items-center border border-bg-border"
-          >
-            <View className="w-11 h-11 rounded-xl bg-brand/15 items-center justify-center mr-3">
-              <Ionicons name="location" size={22} color={colors.brand} />
-            </View>
-            <View className="flex-1">
-              <Text className="text-content-muted text-2xs font-bold tracking-widest">
-                CURRENT LOCATION
-              </Text>
-              <Text className="text-content font-mono text-sm mt-1">
-                {location
-                  ? `${location.latitude.toFixed(5)}, ${location.longitude.toFixed(5)}`
-                  : 'Getting location...'}
-              </Text>
-            </View>
-            <Ionicons name="refresh" size={18} color={colors.textMuted} />
-          </TouchableOpacity>
+          <View className="mt-4">
+            <LocationCard location={location} onRefresh={handleRefreshLocation} />
+          </View>
 
           <SectionHeader title="Incident Type" className="mt-6" />
           <View className="flex-row flex-wrap gap-2">
