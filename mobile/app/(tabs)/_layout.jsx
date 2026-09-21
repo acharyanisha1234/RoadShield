@@ -58,7 +58,7 @@ export default function TabLayout() {
           title: 'PROFILE',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon name="person" focused={focused} />
-          ),
+          )
         }}
       />
     </Tabs>
