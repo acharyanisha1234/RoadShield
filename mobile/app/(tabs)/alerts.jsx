@@ -60,9 +60,7 @@ export default function AlertsScreen() {
                 onPress={() => setFilter(f.key)}
                 activeOpacity={0.8}
                 className={`px-4 py-2.5 rounded-full border ${
-                  active
-                    ? 'bg-brand border-brand'
-                    : 'bg-bg-card border-bg-border'
+                  active ? 'bg-brand border-brand' : 'bg-bg-card border-bg-border'
                 }`}
               >
                 <Text
