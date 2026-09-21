@@ -25,24 +25,24 @@ export const severityConfig = {
   low: {
     label: 'Low',
     color: colors.success,
-    bg: colors.success + '20',
+    bg: 'rgba(0, 210, 106, 0.15)',
   },
   medium: {
     label: 'Medium',
     color: colors.warning,
-    bg: colors.warning + '20',
+    bg: 'rgba(255, 184, 0, 0.15)',
   },
   high: {
     label: 'High',
     color: colors.danger,
-    bg: colors.danger + '20',
+    bg: 'rgba(255, 59, 59, 0.15)',
   },
 };
 
 export const typeConfig = {
-  accident: { label: 'Accident', icon: '🚗', color: '#FF3B3B' },
-  pothole: { label: 'Pothole', icon: '🕳️', color: '#FFB800' },
-  roadwork: { label: 'Roadwork', icon: '🚧', color: '#FF8C42' },
-  flood: { label: 'Flood', icon: '🌊', color: '#3B82F6' },
-  other: { label: 'Other', icon: '⚠️', color: '#94A3B8' },
+  accident: { label: 'Accident', icon: 'car-sport', color: '#FF3B3B' },
+  pothole: { label: 'Pothole', icon: 'ellipse', color: '#FFB800' },
+  roadwork: { label: 'Roadwork', icon: 'construct', color: '#FF8C42' },
+  flood: { label: 'Flood', icon: 'water', color: '#3B82F6' },
+  other: { label: 'Other', icon: 'warning', color: '#94A3B8' },
 };
