@@ -22,54 +22,39 @@ export function AuthProvider({ children }) {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
       }
-    } catch (err) {
-      console.log('Auth load error:', err);
+    } catch (error) {
+      console.error('Auth load failed:', error);
     } finally {
       setLoading(false);
     }
   };
 
+  const persistAuth = async (newToken, userData) => {
+    await AsyncStorage.setItem('token', newToken);
+    await AsyncStorage.setItem('user', JSON.stringify(userData));
+    setToken(newToken);
+    setUser(userData);
+  };
+
   const login = async (email, password) => {
-    try {
-      const res = await authService.login(email, password);
-      const { token: newToken, ...userData } = res.data;
-
-      await AsyncStorage.setItem('token', newToken);
-      await AsyncStorage.setItem('user', JSON.stringify(userData));
-
-      setToken(newToken);
-      setUser(userData);
-      return res;
-    } catch (error) {
-      throw error;
-    }
+    const response = await authService.login(email, password);
+    const { token: newToken, ...userData } = response.data;
+    await persistAuth(newToken, userData);
+    return response;
   };
 
   const register = async (data) => {
-    try {
-      const res = await authService.register(data);
-      const { token: newToken, ...userData } = res.data;
-
-      await AsyncStorage.setItem('token', newToken);
-      await AsyncStorage.setItem('user', JSON.stringify(userData));
-
-      setToken(newToken);
-      setUser(userData);
-      return res;
-    } catch (error) {
-      throw error;
-    }
+    const response = await authService.register(data);
+    const { token: newToken, ...userData } = response.data;
+    await persistAuth(newToken, userData);
+    return response;
   };
 
   const logout = async () => {
-    try {
-      await AsyncStorage.removeItem('token');
-      await AsyncStorage.removeItem('user');
-      setToken(null);
-      setUser(null);
-    } catch (error) {
-      console.log('Logout error:', error);
-    }
+    await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
   };
 
   return (
@@ -82,7 +67,9 @@ export function AuthProvider({ children }) {
 }
 
 export const useAuth = () => {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
-  return ctx;
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
 };
