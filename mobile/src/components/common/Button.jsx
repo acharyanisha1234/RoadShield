@@ -1,4 +1,4 @@
-import { TouchableOpacity, Text, ActivityIndicator, View } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 
