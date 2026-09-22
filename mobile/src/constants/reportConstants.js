@@ -1,8 +1,3 @@
-/**
- * Report-related constants
- * Used across report submission, listing, and detail screens
- */
-
 export const INCIDENT_TYPES = [
   { key: 'accident', label: 'Accident', icon: 'car-sport', color: '#FF3B3B' },
   { key: 'pothole', label: 'Pothole', icon: 'ellipse', color: '#FFB800' },
