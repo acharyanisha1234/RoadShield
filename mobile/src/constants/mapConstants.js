@@ -1,8 +1,3 @@
-/**
- * Map-related constants and configuration
- * Separated from UI for maintainability
- */
-
 export const MAP_CONFIG = {
   LATITUDE_DELTA: 0.05,
   LONGITUDE_DELTA: 0.05,
@@ -10,23 +5,10 @@ export const MAP_CONFIG = {
   REPORTS_FETCH_LIMIT: 100,
 };
 
-/**
- * Google Maps dark theme style array
- * Matches RoadShield brand colors
- */
 export const DARK_MAP_STYLE = [
-  {
-    elementType: 'geometry',
-    stylers: [{ color: '#0B0F1A' }],
-  },
-  {
-    elementType: 'labels.text.fill',
-    stylers: [{ color: '#64748B' }],
-  },
-  {
-    elementType: 'labels.text.stroke',
-    stylers: [{ color: '#0B0F1A' }],
-  },
+  { elementType: 'geometry', stylers: [{ color: '#0B0F1A' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#64748B' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#0B0F1A' }] },
   {
     featureType: 'administrative',
     elementType: 'geometry',
