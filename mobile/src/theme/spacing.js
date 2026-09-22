@@ -6,6 +6,7 @@ export const spacing = {
   xl: 24,
   '2xl': 32,
   '3xl': 48,
+  '4xl': 64,
 };
 
 export const radius = {
@@ -14,5 +15,6 @@ export const radius = {
   lg: 16,
   xl: 20,
   '2xl': 24,
+  '3xl': 32,
   full: 999,
 };
