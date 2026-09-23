@@ -2,9 +2,6 @@ import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 
-/**
- * Floating button to recenter map on user's location
- */
 export default function MapCenterButton({ onPress }) {
   return (
     <TouchableOpacity
