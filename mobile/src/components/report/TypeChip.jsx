@@ -2,6 +2,7 @@ import { TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 
+
 export default function TypeChip({ type, active, onPress }) {
   return (
     <TouchableOpacity
