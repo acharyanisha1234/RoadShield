@@ -1,10 +1,6 @@
 import { Marker } from 'react-native-maps';
 import { severityConfig } from '../../theme/colors';
 
-/**
- * Custom marker component for report locations
- * Extracts marker logic out of main screen
- */
 export default function ReportMarker({ report, onPress }) {
   const coords = report.location?.coordinates;
   if (!coords || coords.length < 2) return null;
