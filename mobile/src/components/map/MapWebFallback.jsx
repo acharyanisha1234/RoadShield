@@ -2,9 +2,6 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, severityConfig } from '../../theme/colors';
 
-/**
- * Report list item for web fallback
- */
 function ReportItem({ report, onPress }) {
   const severity = severityConfig[report.severity] || severityConfig.medium;
   const coords = report.location?.coordinates;
@@ -24,11 +21,7 @@ function ReportItem({ report, onPress }) {
           {report.title}
         </Text>
         <View className="flex-row items-center mt-1">
-          <Ionicons
-            name="location-outline"
-            size={12}
-            color={colors.textMuted}
-          />
+          <Ionicons name="location-outline" size={12} color={colors.textMuted} />
           <Text className="text-content-muted text-xs ml-1" numberOfLines={1}>
             {report.address ||
               (coords
@@ -42,9 +35,6 @@ function ReportItem({ report, onPress }) {
   );
 }
 
-/**
- * Web fallback UI when react-native-maps is not available
- */
 export default function MapWebFallback({ reports, onReportPress }) {
   return (
     <View className="flex-1 bg-bg-card items-center justify-center px-6">
