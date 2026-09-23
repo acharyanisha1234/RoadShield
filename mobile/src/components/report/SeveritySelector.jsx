@@ -1,5 +1,4 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { SEVERITY_LEVELS } from '../../constants/reportConstants';
 
 export default function SeveritySelector({ value, onChange }) {
