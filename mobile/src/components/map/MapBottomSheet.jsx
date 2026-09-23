@@ -2,9 +2,6 @@ import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 
-/**
- * Stat pill component
- */
 function StatPill({ icon, label, value, accentColor }) {
   return (
     <View className="flex-1 bg-bg-elevated rounded-2xl p-3.5 border border-bg-border">
@@ -19,9 +16,6 @@ function StatPill({ icon, label, value, accentColor }) {
   );
 }
 
-/**
- * Bottom sheet with stats and SOS button
- */
 export default function MapBottomSheet({
   highCount,
   mediumCount,
@@ -30,10 +24,8 @@ export default function MapBottomSheet({
 }) {
   return (
     <View className="absolute bottom-0 left-0 right-0 bg-bg-card rounded-t-3xl border-t border-bg-border px-5 pt-4 pb-6">
-      {/* Drag handle */}
       <View className="w-10 h-1 bg-bg-border rounded-full self-center mb-4" />
 
-      {/* Stats row */}
       <View className="flex-row gap-3 mb-4">
         <StatPill
           icon="alert-circle"
@@ -49,7 +41,6 @@ export default function MapBottomSheet({
         />
       </View>
 
-      {/* SOS button */}
       <TouchableOpacity
         onPress={onSosPress}
         disabled={sosLoading}
