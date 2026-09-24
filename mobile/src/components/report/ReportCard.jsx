@@ -76,11 +76,7 @@ export default function ReportCard({ report, onPress }) {
 
             <View className="flex-row items-center gap-3">
               <View className="flex-row items-center">
-                <Ionicons
-                  name="arrow-up"
-                  size={12}
-                  color={colors.textMuted}
-                />
+                <Ionicons name="arrow-up" size={12} color={colors.textMuted} />
                 <Text className="text-content-muted text-xs ml-1 font-semibold">
                   {report.upvotes || 0}
                 </Text>
