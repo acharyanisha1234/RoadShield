@@ -36,6 +36,7 @@ export default function ReportPreviewCard({ report, onPress }) {
           </Text>
         </View>
       </View>
+
       <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
     </TouchableOpacity>
   );
