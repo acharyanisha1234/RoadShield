@@ -86,6 +86,7 @@ export default function CameraCapture({ image, setImage }) {
           </Text>
         </TouchableOpacity>
       </View>
+
       {image && (
         <TouchableOpacity
           onPress={() => setImage(null)}
