@@ -1,8 +1,12 @@
 import { Tabs } from 'expo-router';
 import TabBarIcon from '../../src/components/layout/TabBarIcon';
 import { colors } from '../../src/theme/colors';
+import { useLocationTracking } from '../../src/hooks/useLocationTracking';
 
 export default function TabLayout() {
+  // Continuously track and broadcast user's location
+  useLocationTracking(true);
+
   return (
     <Tabs
       screenOptions={{
@@ -34,6 +38,7 @@ export default function TabLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="report"
         options={{
@@ -43,6 +48,7 @@ export default function TabLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="alerts"
         options={{
@@ -52,6 +58,7 @@ export default function TabLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="profile"
         options={{
@@ -64,3 +71,4 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
