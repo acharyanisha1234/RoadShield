@@ -7,6 +7,7 @@ export const reportService = {
     });
     return res.data;
   },
+
   async getAll(params = {}) {
     const res = await api.get('/reports', { params });
     return res.data;
