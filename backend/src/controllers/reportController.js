@@ -132,10 +132,16 @@ exports.updateStatus = async (req, res, next) => {
       req.params.id,
       { status },
       { new: true, runValidators: true }
-    );
+    ).populate('user', 'name email');
 
     if (!report) {
       return res.status(404).json({ success: false, message: 'Report not found' });
+    }
+
+    // EMIT UPDATE
+    const io = req.app.get('io');
+    if (io) {
+      emitReportUpdate(io, report);
     }
 
     res.json({ success: true, data: report });
