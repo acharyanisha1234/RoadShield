@@ -6,6 +6,7 @@ export default function ReportMarker({ report, onPress }) {
   if (!coords || coords.length < 2) return null;
 
   const severity = severityConfig[report.severity] || severityConfig.medium;
+
   return (
     <Marker
       coordinate={{
