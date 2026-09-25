@@ -28,7 +28,6 @@ export function AuthProvider({ children }) {
       setLoading(false);
     }
   };
-
   const persistAuth = async (newToken, userData) => {
     await AsyncStorage.setItem('token', newToken);
     await AsyncStorage.setItem('user', JSON.stringify(userData));
@@ -65,7 +64,6 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
