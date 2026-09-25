@@ -1,4 +1,5 @@
 const Report = require('../models/Report');
+const { emitNewReport, emitReportUpdate } = require('../sockets/socketHandler');
 
 // @desc Create a report
 // @route POST /api/reports
@@ -13,7 +14,6 @@ exports.createReport = async (req, res, next) => {
       });
     }
 
-    // Image URL — for now use a placeholder (Cloudinary integrate later)
     const images = [];
     if (req.file) {
       images.push({
@@ -37,6 +37,13 @@ exports.createReport = async (req, res, next) => {
     });
 
     await report.populate('user', 'name email');
+
+    //  EMIT REAL-TIME EVENT
+    const io = req.app.get('io');
+    if (io) {
+      emitNewReport(io, report);
+      console.log(`[Socket] New report broadcasted: ${report.title}`);
+    }
 
     res.status(201).json({ success: true, data: report });
   } catch (error) {
