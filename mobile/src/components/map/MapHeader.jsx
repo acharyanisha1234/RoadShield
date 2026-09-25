@@ -2,9 +2,6 @@ import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 
-/**
- * Floating header card displayed on top of the map
- */
 export default function MapHeader({ reportCount = 0 }) {
   return (
     <View className="absolute top-14 left-4 right-4 z-10">
