@@ -2,9 +2,11 @@ import { useEffect, useState, useRef } from 'react';
 import { View, Text, Platform } from 'react-native';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
+import Toast from 'react-native-toast-message';
 
 import { reportService } from '../../src/services/reportService';
 import { MAP_CONFIG, DARK_MAP_STYLE, SOS_CONFIG } from '../../src/constants/mapConstants';
+import { useSocket } from '../../src/hooks/useSocket';
 
 import MapHeader from '../../src/components/map/MapHeader';
 import MapBottomSheet from '../../src/components/map/MapBottomSheet';
@@ -23,6 +25,7 @@ export default function MapScreen() {
   const [sosLoading, setSosLoading] = useState(false);
   const mapRef = useRef(null);
   const router = useRouter();
+  const { onNewReport, onReportUpdate, onSosAlert, updateLocation, triggerSos, onlineCount } = useSocket();
 
   const initializeLocation = async () => {
     try {
@@ -30,12 +33,14 @@ export default function MapScreen() {
       if (status !== 'granted') return;
 
       const location = await Location.getCurrentPositionAsync({});
-      setRegion({
+      const newRegion = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
         latitudeDelta: MAP_CONFIG.LATITUDE_DELTA,
         longitudeDelta: MAP_CONFIG.LONGITUDE_DELTA,
-      });
+      };
+      setRegion(newRegion);
+      updateLocation(newRegion.latitude, newRegion.longitude);
     } catch (error) {
       console.error('Location error:', error);
     }
@@ -55,6 +60,56 @@ export default function MapScreen() {
     fetchReports();
   }, []);
 
+  /**
+   * Real-time: new report
+   */
+  useEffect(() => {
+    const cleanup = onNewReport(({ report }) => {
+      setReports((prev) => {
+        const exists = prev.find((r) => r._id === report._id);
+        if (exists) return prev;
+        return [report, ...prev];
+      });
+
+      Toast.show({
+        type: 'info',
+        text1: 'New incident reported',
+        text2: report.title,
+      });
+    });
+
+    return cleanup;
+  }, [onNewReport]);
+
+  /**
+   * Real-time: report updated
+   */
+  useEffect(() => {
+    const cleanup = onReportUpdate(({ report }) => {
+      setReports((prev) =>
+        prev.map((r) => (r._id === report._id ? report : r))
+      );
+    });
+
+    return cleanup;
+  }, [onReportUpdate]);
+
+  /**
+   * Real-time: SOS from other users
+   */
+  useEffect(() => {
+    const cleanup = onSosAlert((data) => {
+      Toast.show({
+        type: 'error',
+        text1: 'SOS Alert',
+        text2: `${data.userName} needs help nearby`,
+        visibilityTime: 5000,
+      });
+    });
+
+    return cleanup;
+  }, [onSosAlert]);
+
   const handleCenterMap = () => {
     if (region && mapRef.current && Platform.OS !== 'web') {
       mapRef.current.animateToRegion(region, MAP_CONFIG.ANIMATION_DURATION);
@@ -63,7 +118,12 @@ export default function MapScreen() {
 
   const handleSos = () => {
     setSosLoading(true);
-    setTimeout(() => {
+
+    const send = () => {
+      if (region) {
+        triggerSos(region.latitude, region.longitude);
+      }
+
       setSosLoading(false);
       const message = `SOS: ${SOS_CONFIG.SUCCESS_MESSAGE}`;
       if (Platform.OS === 'web') {
@@ -71,7 +131,9 @@ export default function MapScreen() {
       } else {
         alert(message);
       }
-    }, SOS_CONFIG.TIMEOUT_MS);
+    };
+
+    setTimeout(send, SOS_CONFIG.TIMEOUT_MS);
   };
 
   const handleReportPress = (report) => {
