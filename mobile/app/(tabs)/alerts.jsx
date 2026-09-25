@@ -10,15 +10,19 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 
 import ReportCard from '../../src/components/report/ReportCard';
 import EmptyState from '../../src/components/common/EmptyState';
+import RealtimeBadge from '../../src/components/common/RealtimeBadge';
 import { useReports } from '../../src/hooks/useReports';
+import { useSocket } from '../../src/hooks/useSocket';
 import { colors } from '../../src/theme/colors';
 import { ALERT_FILTERS } from '../../src/constants/reportConstants';
 
 export default function AlertsScreen() {
-  const { reports, loading, fetchReports } = useReports();
+  const { reports, loading, fetchReports, addReport } = useReports();
+  const { isConnected, onlineCount, onNewReport } = useSocket();
   const [filter, setFilter] = useState('all');
   const router = useRouter();
 
@@ -31,6 +35,27 @@ export default function AlertsScreen() {
     load();
   }, [load]);
 
+  /**
+   * Real-time: new report arrives
+   */
+  useEffect(() => {
+    const cleanup = onNewReport(({ report }) => {
+      // Only add if matches current filter
+      if (filter === 'all' || report.severity === filter) {
+        addReport(report);
+
+        Toast.show({
+          type: 'info',
+          text1: 'New report nearby',
+          text2: report.title,
+          visibilityTime: 3000,
+        });
+      }
+    });
+
+    return cleanup;
+  }, [onNewReport, addReport, filter]);
+
   return (
     <View className="flex-1 bg-bg">
       <View className="px-5 pt-16 pb-4">
@@ -41,9 +66,7 @@ export default function AlertsScreen() {
               {reports.length} {reports.length === 1 ? 'report' : 'reports'} nearby
             </Text>
           </View>
-          <View className="w-11 h-11 rounded-2xl bg-brand/15 items-center justify-center">
-            <Ionicons name="notifications" size={22} color={colors.brand} />
-          </View>
+          <RealtimeBadge connected={isConnected} count={onlineCount} />
         </View>
 
         <ScrollView
