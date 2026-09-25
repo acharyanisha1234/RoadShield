@@ -50,6 +50,7 @@ export default function MapWebFallback({ reports, onReportPress }) {
         The live map is optimized for mobile devices. Open RoadShield on your
         phone to view real-time incident locations.
       </Text>
+
       {reports.length > 0 && (
         <View className="mt-8 w-full max-w-md">
           <Text className="text-content-secondary text-xs font-bold tracking-widest mb-3">
