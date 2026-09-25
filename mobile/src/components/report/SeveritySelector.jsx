@@ -6,6 +6,7 @@ export default function SeveritySelector({ value, onChange }) {
     <View className="flex-row gap-3">
       {SEVERITY_LEVELS.map((level) => {
         const active = value === level.key;
+
         return (
           <TouchableOpacity
             key={level.key}
