@@ -16,7 +16,6 @@ async def health_check():
         "service": "roadshield-ai",
         "timestamp": datetime.utcnow().isoformat(),
     }
-
 @router.get("/ping")
 async def ping():
     """Simple ping"""
