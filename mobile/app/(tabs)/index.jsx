@@ -184,7 +184,6 @@ export default function MapScreen() {
           />
         ))}
       </MapView>
-
       <MapHeader reportCount={reports.length} />
       <MapCenterButton onPress={handleCenterMap} />
       <MapBottomSheet
