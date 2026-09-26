@@ -17,7 +17,6 @@ async def health_check():
         "timestamp": datetime.utcnow().isoformat(),
     }
 
-
 @router.get("/ping")
 async def ping():
     """Simple ping"""
