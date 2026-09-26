@@ -3,7 +3,6 @@ Accident detection endpoints
 """
 
 from fastapi import APIRouter, UploadFile, File, HTTPException, Form
-from typing import Optional
 
 from app.services.detection_service import detector
 from app.utils.image_utils import validate_image, load_image, save_upload
@@ -13,35 +12,16 @@ router = APIRouter()
 
 
 @router.post("/detect")
-async def detect_accident(
-    file: UploadFile = File(...),
-    save: bool = Form(False),
-):
-    """
-    Analyze an image for accident indicators
-
-    - **file**: Image file (JPEG, PNG, WebP, max 5MB)
-    - **save**: Whether to save uploaded file
-
-    Returns detection result with confidence and severity
-    """
+async def detect_accident(file: UploadFile = File(...), save: bool = Form(False)):
     try:
         content = await file.read()
-
-        # Validate
         is_valid, error = validate_image(content, file.content_type)
         if not is_valid:
-            logger.warning(f"Invalid upload: {error}")
             raise HTTPException(status_code=400, detail=error)
-
-        # Optional save
         if save:
             save_upload(content, file.filename or "upload.jpg")
-
-        # Load and analyze
         image = load_image(content)
         result = detector.detect(image)
-
         return {
             "success": True,
             "filename": file.filename,
@@ -52,17 +32,14 @@ async def detect_accident(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Detection endpoint error: {e}")
+        logger.error(f"Detection error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/detect/batch")
 async def detect_batch(files: list[UploadFile] = File(...)):
-    """
-    Analyze multiple images at once
-    """
     if len(files) > 10:
-        raise HTTPException(status_code=400, detail="Max 10 files per batch")
+        raise HTTPException(status_code=400, detail="Max 10 files")
 
     results = []
     for file in files:
@@ -71,21 +48,13 @@ async def detect_batch(files: list[UploadFile] = File(...)):
             is_valid, error = validate_image(content, file.content_type)
 
             if not is_valid:
-                results.append({
-                    "filename": file.filename,
-                    "success": False,
-                    "error": error,
-                })
+                results.append({"filename": file.filename, "success": False, "error": error})
                 continue
 
             image = load_image(content)
             result = detector.detect(image)
 
-            results.append({
-                "filename": file.filename,
-                "success": True,
-                "result": result,
-            })
+            results.append({"filename": file.filename, "success": True, "result": result})
         except Exception as e:
             results.append({
                 "filename": file.filename,
