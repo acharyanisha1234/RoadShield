@@ -59,7 +59,7 @@ const reportSchema = new mongoose.Schema(
       default: 0,
     },
 
-    // 🔥 AI Fields (NEW)
+    // AI Fields (NEW)
     aiAnalysis: {
       analyzed: { type: Boolean, default: false },
       analyzedAt: { type: Date },
