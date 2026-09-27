@@ -30,7 +30,7 @@ exports.createReport = async (req, res, next) => {
       });
     }
 
-    // 🔥 AI ANALYSIS (only if image present)
+    //  AI ANALYSIS (only if image present)
     let aiAnalysis = {
       analyzed: false,
     };
@@ -89,7 +89,7 @@ exports.createReport = async (req, res, next) => {
 
     await report.populate('user', 'name email');
 
-    // 🔥 REAL-TIME BROADCAST
+    //  REAL-TIME BROADCAST
     const io = req.app.get('io');
     if (io) {
       emitNewReport(io, report);
