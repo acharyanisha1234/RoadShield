@@ -35,7 +35,7 @@ const reportSchema = new mongoose.Schema(
         default: 'Point',
       },
       coordinates: {
-        type: [Number], // [longitude, latitude]
+        type: [Number],
         required: true,
       },
     },
@@ -58,11 +58,32 @@ const reportSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+
+    // 🔥 AI Fields (NEW)
+    aiAnalysis: {
+      analyzed: { type: Boolean, default: false },
+      analyzedAt: { type: Date },
+      accidentDetected: { type: Boolean },
+      confidence: { type: Number, min: 0, max: 1 },
+      predictedSeverity: {
+        type: String,
+        enum: ['low', 'medium', 'high'],
+      },
+      features: {
+        red_ratio: Number,
+        edge_density: Number,
+        brightness: Number,
+        contrast: Number,
+        dark_ratio: Number,
+        vehicle_count: Number,
+      },
+      indicators: [String],
+      reasoning: [String],
+    },
   },
   { timestamps: true }
 );
 
-// Geospatial index for nearby queries
 reportSchema.index({ location: '2dsphere' });
 
 module.exports = mongoose.model('Report', reportSchema);
