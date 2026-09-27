@@ -14,6 +14,7 @@ import Toast from 'react-native-toast-message';
 import { reportService } from '../../src/services/reportService';
 import SeverityBadge from '../../src/components/report/SeverityBadge';
 import ReportTimeline from '../../src/components/report/ReportTimeline';
+import AIAnalysisCard from '../../src/components/report/AIAnalysisCard';
 import Button from '../../src/components/common/Button';
 import { colors } from '../../src/theme/colors';
 import { INCIDENT_TYPES, REPORT_STATUS } from '../../src/constants/reportConstants';
@@ -80,6 +81,7 @@ export default function ReportDetailScreen() {
       contentContainerStyle={{ paddingBottom: 40 }}
       showsVerticalScrollIndicator={false}
     >
+      {/* Header */}
       <View className="px-5 pt-14 pb-4 flex-row items-center">
         <TouchableOpacity
           onPress={() => router.back()}
@@ -104,6 +106,7 @@ export default function ReportDetailScreen() {
         </View>
       </View>
 
+      {/* Image or Icon */}
       {report.images?.[0]?.url ? (
         <Image
           source={{ uri: report.images[0].url }}
@@ -120,6 +123,7 @@ export default function ReportDetailScreen() {
       )}
 
       <View className="px-5 pt-5">
+        {/* Title + Severity */}
         <View className="flex-row items-start justify-between mb-3">
           <Text className="text-content text-2xl font-bold flex-1 mr-3">
             {report.title}
@@ -127,6 +131,7 @@ export default function ReportDetailScreen() {
           <SeverityBadge severity={report.severity} />
         </View>
 
+        {/* Meta info */}
         <View className="flex-row items-center flex-wrap gap-4 mb-4">
           <View className="flex-row items-center">
             <Ionicons name="time-outline" size={14} color={colors.textMuted} />
@@ -142,6 +147,7 @@ export default function ReportDetailScreen() {
           </View>
         </View>
 
+        {/* Location Card */}
         <View className="bg-bg-card rounded-2xl p-4 border border-bg-border flex-row items-center mb-4">
           <View className="w-11 h-11 rounded-xl bg-brand/15 items-center justify-center mr-3">
             <Ionicons name="location" size={22} color={colors.brand} />
@@ -156,6 +162,17 @@ export default function ReportDetailScreen() {
           </View>
         </View>
 
+        {/* 🔥 AI ANALYSIS CARD */}
+        {report.aiAnalysis?.analyzed && (
+          <View className="mb-4">
+            <Text className="text-content-muted text-2xs font-bold tracking-widest mb-2">
+              AI ANALYSIS
+            </Text>
+            <AIAnalysisCard aiAnalysis={report.aiAnalysis} />
+          </View>
+        )}
+
+        {/* Description */}
         {report.description && (
           <View className="mb-4">
             <Text className="text-content-muted text-2xs font-bold tracking-widest mb-2">
@@ -169,6 +186,7 @@ export default function ReportDetailScreen() {
           </View>
         )}
 
+        {/* Reporter */}
         <View className="mb-4">
           <Text className="text-content-muted text-2xs font-bold tracking-widest mb-2">
             REPORTER
@@ -183,6 +201,7 @@ export default function ReportDetailScreen() {
           </View>
         </View>
 
+        {/* Timeline */}
         <View className="mb-4">
           <Text className="text-content-muted text-2xs font-bold tracking-widest mb-2">
             TIMELINE
@@ -190,6 +209,7 @@ export default function ReportDetailScreen() {
           <ReportTimeline report={report} />
         </View>
 
+        {/* Upvote */}
         <View className="bg-bg-card rounded-2xl p-4 border border-bg-border flex-row items-center justify-between">
           <View>
             <Text className="text-content-muted text-2xs font-bold tracking-widest">
