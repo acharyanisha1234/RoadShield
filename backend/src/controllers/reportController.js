@@ -1,7 +1,8 @@
 const Report = require('../models/Report');
 const { emitNewReport, emitReportUpdate } = require('../sockets/socketHandler');
+const pythonService = require('../services/pythonService');
 
-// @desc Create a report
+// @desc Create a report with AI analysis
 // @route POST /api/reports
 exports.createReport = async (req, res, next) => {
   try {
@@ -14,31 +15,81 @@ exports.createReport = async (req, res, next) => {
       });
     }
 
+    // Prepare image
     const images = [];
+    let imageBuffer = null;
+    let imageFilename = null;
+
     if (req.file) {
+      imageBuffer = req.file.buffer;
+      imageFilename = req.file.originalname || `report-${Date.now()}.jpg`;
+
       images.push({
         url: `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`,
         publicId: null,
       });
     }
 
+    // 🔥 AI ANALYSIS (only if image present)
+    let aiAnalysis = {
+      analyzed: false,
+    };
+
+    if (imageBuffer && process.env.AI_ENABLED !== 'false') {
+      try {
+        console.log('[ReportController] Running AI analysis...');
+
+        const detection = await pythonService.detectAccident(
+          imageBuffer,
+          imageFilename
+        );
+
+        if (detection) {
+          aiAnalysis = {
+            analyzed: true,
+            analyzedAt: new Date(),
+            accidentDetected: detection.accident_detected,
+            confidence: detection.confidence,
+            predictedSeverity: detection.severity,
+            features: detection.features,
+            indicators: detection.indicators || [],
+            reasoning: [],
+          };
+
+          console.log(
+            `[ReportController] AI: accident=${detection.accident_detected}, ` +
+              `severity=${detection.severity}, confidence=${detection.confidence}`
+          );
+        }
+      } catch (aiError) {
+        console.error('[ReportController] AI analysis failed:', aiError.message);
+        // Continue without AI — graceful degradation
+      }
+    }
+
+    // Determine final severity: AI > user input > default
+    const finalSeverity =
+      aiAnalysis.predictedSeverity || severity || 'medium';
+
+    // Create report
     const report = await Report.create({
       user: req.user._id,
       title: title || `${type} reported`,
       description,
       type: type || 'accident',
-      severity: severity || 'medium',
+      severity: finalSeverity,
       location: {
         type: 'Point',
         coordinates: [parseFloat(longitude), parseFloat(latitude)],
       },
       address,
       images,
+      aiAnalysis,
     });
 
     await report.populate('user', 'name email');
 
-    //  EMIT REAL-TIME EVENT
+    // 🔥 REAL-TIME BROADCAST
     const io = req.app.get('io');
     if (io) {
       emitNewReport(io, report);
@@ -77,7 +128,10 @@ exports.getReports = async (req, res, next) => {
 // @route GET /api/reports/:id
 exports.getReport = async (req, res, next) => {
   try {
-    const report = await Report.findById(req.params.id).populate('user', 'name email');
+    const report = await Report.findById(req.params.id).populate(
+      'user',
+      'name email'
+    );
 
     if (!report) {
       return res.status(404).json({ success: false, message: 'Report not found' });
@@ -90,10 +144,10 @@ exports.getReport = async (req, res, next) => {
 };
 
 // @desc Get nearby reports
-// @route GET /api/reports/nearby?lat=..&lng=..&radius=5
+// @route GET /api/reports/nearby
 exports.getNearbyReports = async (req, res, next) => {
   try {
-    const { lat, lng, radius = 5 } = req.query; // radius in km
+    const { lat, lng, radius = 5 } = req.query;
 
     if (!lat || !lng) {
       return res.status(400).json({
@@ -109,7 +163,7 @@ exports.getNearbyReports = async (req, res, next) => {
             type: 'Point',
             coordinates: [parseFloat(lng), parseFloat(lat)],
           },
-          $maxDistance: parseFloat(radius) * 1000, // meters
+          $maxDistance: parseFloat(radius) * 1000,
         },
       },
     })
@@ -122,7 +176,7 @@ exports.getNearbyReports = async (req, res, next) => {
   }
 };
 
-// @desc Update report status (admin/police)
+// @desc Update report status
 // @route PATCH /api/reports/:id/status
 exports.updateStatus = async (req, res, next) => {
   try {
@@ -138,7 +192,6 @@ exports.updateStatus = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Report not found' });
     }
 
-    // EMIT UPDATE
     const io = req.app.get('io');
     if (io) {
       emitReportUpdate(io, report);
@@ -165,6 +218,54 @@ exports.upvoteReport = async (req, res, next) => {
     }
 
     res.json({ success: true, data: report });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc Get AI hotspots
+// @route GET /api/reports/analytics/hotspots
+exports.getHotspots = async (req, res, next) => {
+  try {
+    const reports = await Report.find().select('location severity type status');
+
+    const hotspots = await pythonService.findHotspots(
+      reports.map((r) => r.toObject())
+    );
+
+    if (!hotspots) {
+      return res.json({ success: true, count: 0, hotspots: [] });
+    }
+
+    res.json({ success: true, count: hotspots.length, hotspots });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc Get AI statistics
+// @route GET /api/reports/analytics/stats
+exports.getStats = async (req, res, next) => {
+  try {
+    const reports = await Report.find().select('severity type status location');
+
+    const stats = await pythonService.computeStats(
+      reports.map((r) => r.toObject())
+    );
+
+    if (!stats) {
+      return res.json({
+        success: true,
+        stats: {
+          total: reports.length,
+          by_severity: { low: 0, medium: 0, high: 0 },
+          by_type: {},
+          by_status: {},
+        },
+      });
+    }
+
+    res.json({ success: true, stats });
   } catch (error) {
     next(error);
   }
