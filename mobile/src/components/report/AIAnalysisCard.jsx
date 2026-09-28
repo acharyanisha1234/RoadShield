@@ -155,7 +155,6 @@ function FeatureChip({ label, value, color, isCount = false }) {
     : typeof value === 'number'
     ? value.toFixed(2)
     : value;
-
   return (
     <View
       className="px-3 py-2 rounded-xl flex-row items-center"
