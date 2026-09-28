@@ -20,7 +20,6 @@ export default function CameraCapture({ image, setImage }) {
       const launcher = fromCamera
         ? ImagePicker.launchCameraAsync
         : ImagePicker.launchImageLibraryAsync;
-
       const result = await launcher({
         mediaTypes: ['images'],
         quality: REPORT_LIMITS.IMAGE_QUALITY,
