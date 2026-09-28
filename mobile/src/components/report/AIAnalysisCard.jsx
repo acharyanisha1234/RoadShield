@@ -148,7 +148,6 @@ export default function AIAnalysisCard({ aiAnalysis }) {
     </View>
   );
 }
-
 function FeatureChip({ label, value, color, isCount = false }) {
   const displayValue = isCount
     ? value
