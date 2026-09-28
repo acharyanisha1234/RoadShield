@@ -9,6 +9,7 @@ export default function ReportCard({ report, onPress }) {
   const type =
     INCIDENT_TYPES.find((t) => t.key === report.type) || INCIDENT_TYPES[4];
   const coords = report.location?.coordinates;
+  const hasAI = report.aiAnalysis?.analyzed;
 
   return (
     <TouchableOpacity
@@ -18,11 +19,23 @@ export default function ReportCard({ report, onPress }) {
     >
       <View className="flex-row">
         {report.images?.[0]?.url ? (
-          <Image
-            source={{ uri: report.images[0].url }}
-            className="w-24 h-24"
-            resizeMode="cover"
-          />
+          <View className="w-24 h-24 relative">
+            <Image
+              source={{ uri: report.images[0].url }}
+              className="w-full h-full"
+              resizeMode="cover"
+            />
+            {hasAI && (
+              <View className="absolute top-1.5 left-1.5 bg-bg/90 rounded-md px-1.5 py-0.5 flex-row items-center">
+                <Ionicons
+                  name="hardware-chip"
+                  size={10}
+                  color={colors.brand}
+                />
+                <Text className="text-brand text-2xs font-bold ml-1">AI</Text>
+              </View>
+            )}
+          </View>
         ) : (
           <View
             className="w-24 h-24 items-center justify-center"
@@ -70,9 +83,18 @@ export default function ReportCard({ report, onPress }) {
           </View>
 
           <View className="flex-row items-center justify-between mt-2">
-            <Text className="text-content-dim text-2xs font-semibold">
-              {formatRelativeTime(report.createdAt).toUpperCase()}
-            </Text>
+            <View className="flex-row items-center gap-2">
+              <Text className="text-content-dim text-2xs font-semibold">
+                {formatRelativeTime(report.createdAt).toUpperCase()}
+              </Text>
+              {hasAI && report.aiAnalysis?.confidence !== undefined && (
+                <View className="bg-brand/10 rounded-md px-1.5 py-0.5">
+                  <Text className="text-brand text-2xs font-bold">
+                    {Math.round(report.aiAnalysis.confidence * 100)}%
+                  </Text>
+                </View>
+              )}
+            </View>
 
             <View className="flex-row items-center gap-3">
               <View className="flex-row items-center">
