@@ -40,7 +40,7 @@ export default function MapBottomSheet({
           accentColor={colors.warning}
         />
       </View>
-
+    
       <TouchableOpacity
         onPress={onSosPress}
         disabled={sosLoading}
