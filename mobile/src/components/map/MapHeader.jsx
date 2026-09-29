@@ -16,7 +16,6 @@ export default function MapHeader({ reportCount = 0 }) {
             {reportCount} active {reportCount === 1 ? 'report' : 'reports'} nearby
           </Text>
         </View>
-
         <View className="flex-row items-center">
           <View className="w-1.5 h-1.5 rounded-full bg-success mr-1.5" />
           <Text className="text-success text-2xs font-bold tracking-wider">
