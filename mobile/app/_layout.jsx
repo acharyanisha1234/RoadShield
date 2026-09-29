@@ -18,6 +18,7 @@ export default function RootLayout() {
             animation: 'slide_from_right',
           }}
         />
+        
         <Toast />
       </SocketProvider>
     </AuthProvider>
