@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const errorHandler = require('./middleware/errorHandler');
 const authRoutes = require('./routes/authRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 const pythonService = require('./services/pythonService');
 
 const app = express();
@@ -27,6 +28,7 @@ app.get('/ai-health', async (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.use(errorHandler);
 
