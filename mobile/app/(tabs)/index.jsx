@@ -12,11 +12,20 @@ import MapHeader from '../../src/components/map/MapHeader';
 import MapBottomSheet from '../../src/components/map/MapBottomSheet';
 import MapCenterButton from '../../src/components/map/MapCenterButton';
 import MapWebFallback from '../../src/components/map/MapWebFallback';
-import ReportMarker from '../../src/components/map/ReportMarker';
 
+// Conditional import — react-native-maps is native-only
 let MapView = null;
+let ReportMarker = null;
+
 if (Platform.OS !== 'web') {
-  MapView = require('react-native-maps').default;
+  try {
+    MapView = require('react-native-maps').default;
+    ReportMarker = require('../../src/components/map/ReportMarker').default;
+  } catch (error) {
+    console.warn('[MapScreen] react-native-maps unavailable:', error.message);
+    MapView = null;
+    ReportMarker = null;
+  }
 }
 
 export default function MapScreen() {
@@ -25,12 +34,23 @@ export default function MapScreen() {
   const [sosLoading, setSosLoading] = useState(false);
   const mapRef = useRef(null);
   const router = useRouter();
-  const { onNewReport, onReportUpdate, onSosAlert, updateLocation, triggerSos, onlineCount } = useSocket();
 
+  const {
+    onNewReport,
+    onReportUpdate,
+    onSosAlert,
+    updateLocation,
+    triggerSos,
+  } = useSocket();
+
+  // -------- LOCATION --------
   const initializeLocation = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') return;
+      if (status !== 'granted') {
+        console.warn('[MapScreen] Location permission denied');
+        return;
+      }
 
       const location = await Location.getCurrentPositionAsync({});
       const newRegion = {
@@ -42,16 +62,17 @@ export default function MapScreen() {
       setRegion(newRegion);
       updateLocation(newRegion.latitude, newRegion.longitude);
     } catch (error) {
-      console.error('Location error:', error);
+      console.error('[MapScreen] Location error:', error);
     }
   };
 
+  // -------- FETCH REPORTS --------
   const fetchReports = async () => {
     try {
       const response = await reportService.getAll();
       setReports(response.data || []);
     } catch (error) {
-      console.error('Reports error:', error);
+      console.error('[MapScreen] Reports error:', error);
     }
   };
 
@@ -60,9 +81,7 @@ export default function MapScreen() {
     fetchReports();
   }, []);
 
-  /**
-   * Real-time: new report
-   */
+  // -------- REAL-TIME: NEW REPORT --------
   useEffect(() => {
     const cleanup = onNewReport(({ report }) => {
       setReports((prev) => {
@@ -81,9 +100,7 @@ export default function MapScreen() {
     return cleanup;
   }, [onNewReport]);
 
-  /**
-   * Real-time: report updated
-   */
+  // -------- REAL-TIME: REPORT UPDATE --------
   useEffect(() => {
     const cleanup = onReportUpdate(({ report }) => {
       setReports((prev) =>
@@ -94,9 +111,7 @@ export default function MapScreen() {
     return cleanup;
   }, [onReportUpdate]);
 
-  /**
-   * Real-time: SOS from other users
-   */
+  // -------- REAL-TIME: SOS ALERT --------
   useEffect(() => {
     const cleanup = onSosAlert((data) => {
       Toast.show({
@@ -110,6 +125,7 @@ export default function MapScreen() {
     return cleanup;
   }, [onSosAlert]);
 
+  // -------- HANDLERS --------
   const handleCenterMap = () => {
     if (region && mapRef.current && Platform.OS !== 'web') {
       mapRef.current.animateToRegion(region, MAP_CONFIG.ANIMATION_DURATION);
@@ -126,8 +142,9 @@ export default function MapScreen() {
 
       setSosLoading(false);
       const message = `SOS: ${SOS_CONFIG.SUCCESS_MESSAGE}`;
+
       if (Platform.OS === 'web') {
-        window.alert(message);
+        if (typeof window !== 'undefined') window.alert(message);
       } else {
         alert(message);
       }
@@ -143,6 +160,7 @@ export default function MapScreen() {
   const highCount = reports.filter((r) => r.severity === 'high').length;
   const mediumCount = reports.filter((r) => r.severity === 'medium').length;
 
+  // -------- WEB FALLBACK --------
   if (Platform.OS === 'web') {
     return (
       <View className="flex-1 bg-bg">
@@ -158,7 +176,8 @@ export default function MapScreen() {
     );
   }
 
-  if (!region) {
+  // -------- NATIVE LOADING --------
+  if (!region || !MapView) {
     return (
       <View className="flex-1 bg-bg items-center justify-center">
         <Text className="text-content-secondary text-sm">Loading map...</Text>
@@ -166,6 +185,7 @@ export default function MapScreen() {
     );
   }
 
+  // -------- NATIVE MAP --------
   return (
     <View className="flex-1 bg-bg">
       <MapView
@@ -176,14 +196,16 @@ export default function MapScreen() {
         showsMyLocationButton={false}
         customMapStyle={DARK_MAP_STYLE}
       >
-        {reports.map((report) => (
-          <ReportMarker
-            key={report._id}
-            report={report}
-            onPress={handleReportPress}
-          />
-        ))}
+        {ReportMarker &&
+          reports.map((report) => (
+            <ReportMarker
+              key={report._id}
+              report={report}
+              onPress={handleReportPress}
+            />
+          ))}
       </MapView>
+
       <MapHeader reportCount={reports.length} />
       <MapCenterButton onPress={handleCenterMap} />
       <MapBottomSheet
