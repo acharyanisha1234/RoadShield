@@ -8,7 +8,6 @@ export default function SeverityBadge({ severity = 'medium', size = 'md' }) {
     sm: { padding: 'px-2 py-0.5', text: 'text-2xs' },
     md: { padding: 'px-2.5 py-1', text: 'text-xs' },
   };
-
   const sz = sizes[size] || sizes.md;
 
   return (
