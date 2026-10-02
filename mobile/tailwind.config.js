@@ -33,7 +33,6 @@ module.exports = {
           dim: '#475569',
         },
       },
-      
       fontSize: {
         '2xs': '10px',
       },
