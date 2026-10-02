@@ -34,7 +34,6 @@ export function AuthProvider({ children }) {
     setToken(newToken);
     setUser(userData);
   };
-
   const login = async (email, password) => {
     const response = await authService.login(email, password);
     const { token: newToken, ...userData } = response.data;
