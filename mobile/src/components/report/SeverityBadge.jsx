@@ -9,7 +9,6 @@ export default function SeverityBadge({ severity = 'medium', size = 'md' }) {
     md: { padding: 'px-2.5 py-1', text: 'text-xs' },
   };
   const sz = sizes[size] || sizes.md;
-
   return (
     <View
       className={`rounded-full ${sz.padding}`}
