@@ -10,6 +10,7 @@ export default function TypeChip({ type, active, onPress }) {
       className={`flex-row items-center px-4 py-3 rounded-2xl border ${
         active ? 'bg-brand border-brand' : 'bg-bg-card border-bg-border'
       }`}
+      
       style={
         active
           ? {
